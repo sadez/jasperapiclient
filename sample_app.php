@@ -3,20 +3,31 @@
 error_reporting(E_ALL);
 ini_set('display_errors', true);
 
-require_once('jasper_api_client.php');
-require_once('format/report.php');
-require_once('format/pdf.php');
-require_once('format/html.php');
-require_once('builders/html_list.php');
+$api_ini = parse_ini_file('jasper_api_client.ini', true);
 
+define('FULL_PATH', '/home/jthullbery/www/public_html/jasperApi/trunk/');
 
-$jasper_url = "https://reports.teladoc.com/services/repository";
-$jasper_username = "portal";
-//$jasper_username = "jthullbery";
-$jasper_password = "test1234";
+foreach ($api_ini['required_dir'] AS $value)
+{
+    $files = scandir(FULL_PATH . $value, 1);
+    foreach ($files AS $name)
+    {
+        if (substr($name, -3) == 'php')
+        {
+            require_once($value . '/' . $name);
+        }
+    }
+}
+
+foreach ($api_ini['required'] AS $value)
+{
+    require_once($value);
+}
 
 // Create the JasperApiClient object - Pass it the URL, Username and Password
-$client = new JasperApiClient($jasper_url, $jasper_username, $jasper_password);
+$client = new JasperApiClient($api_ini['jasper_server_settings']['jasper_url'],
+                              $api_ini['jasper_server_settings']['jasper_username'],
+                              $api_ini['jasper_server_settings']['jasper_password']);
 
 // Request the list of reports
 $listXml = $client->requestList();
@@ -75,7 +86,7 @@ if (isset($_POST['submit']))
             if (strpos($k, 'img_') !== FALSE)
             {
                 $filename = date('U') . '_' . $k . $v['extension'];
-                $handle = fopen('/Applications/MAMP/htdocs/wsdl/images/' . $filename, 'w');
+                $handle = fopen('/path/to/writable/' . $filename, 'w');
                 if (fwrite($handle, $v['image']) === FALSE)
                 {
                     echo "Could not write to file ({$filename})";
@@ -89,7 +100,7 @@ if (isset($_POST['submit']))
     }
     else
     {
-        echo strtoupper(get_class($report_format)) . 'China. Man.';
+        echo 'Nothing defined for format: ' . strtoupper(get_class($report_format)) . '.';
     }
 }
 else
