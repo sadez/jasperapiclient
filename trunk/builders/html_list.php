@@ -1,6 +1,6 @@
 <?php
 
-class ReportList
+class HtmlList
 {
     private $list;
     private $options;
