@@ -1,24 +1,6 @@
 <?php
 /**
- * PHP client for JasperServer via SOAP.
- *
- * USAGE:
- * 
- *  $jasper_url = "http://jasper.example.com/jasperserver/services/repository";
- *  $jasper_username = "jasperadmin";
- *  $jasper_password = "topsecret";
- *
- *
- *  $client = new JasperClient($jasper_url, $jasper_username, $jasper_password);
- *
- *  $report_unit = "/my_report";
- *  $report_format = "PDF";
- *  $report_params = array('foo' => 'bar', 'fruit' => 'apple');
- * 
- *  $result = $client->requestReport($report_unit, $report_format,$report_params);
- *
- *  header('Content-type: application/pdf');
- *  echo $result;
+ * A client for the Jasper Report Server Web Service written in PHP
  */
 
 class JasperApiClient
@@ -41,9 +23,9 @@ class JasperApiClient
     }
     
     /**
-     * Makes a SOAP call to a Jasper server and returns a ReportList object containing a list of reports available on the server
+     * Makes a SOAP call to a Jasper server and returns a string containing XML that is all the list items
      *
-     * @return ReportList
+     * @return XML
      */
     public function requestList()
     {
@@ -70,21 +52,23 @@ class JasperApiClient
         try
         {
             $result = $client->__soapCall('list', array( new SoapParam($request,"requestXmlString") ));
-            $list = new ReportList($result);
         }
         catch(SoapFault $exception)
         {
             throw new Exception("Jasper did not return list data. Instead got: \n$result");
         }
         
-        return $list;
+        return $result;
     }
 
     /**
      * Returns a report that in given $format
      *
-     * $report string The name of the report as it appears on the server
+     * @param $report string The name of the report as it appears on the server
+     * @param $format object An object of the given format for said report
+     * @param $params array  An array holding any number of paramters that pertain to said report
      *
+     * @return $format object
      */
     public function requestReport($report, $format, $params)
     {
@@ -116,7 +100,6 @@ class JasperApiClient
             'style'    => $this->style,
             'use'      => $this->use));
         
-        $pdf = null;
         try
         {
             $result = $client->__soapCall('runReport', array(new SoapParam($request,"requestXmlString")));
