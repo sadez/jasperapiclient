@@ -15,6 +15,7 @@ class ScheduleReport extends JasperApi
         $xml_request = str_replace('!!report!!', $this->report, $xml_request);
         $xml_request = str_replace('!!label!!', date('U'), $xml_request);
         $xml_request = str_replace('!!description!!', '', $xml_request);
+        $xml_request = str_replace('!!parameters!!', $params, $xml_request);
         $xml_request = str_replace('!!simple_trigger!!', '', $xml_request);
         $xml_request = str_replace('!!calendar_trigger!!', '', $xml_request);
         $xml_request = str_replace('!!output_filename!!', $filename, $xml_request);
@@ -32,7 +33,8 @@ class ScheduleReport extends JasperApi
         }
         catch(SoapFault $exception)
         {
-            $this->format->setClient($soap_client);
+            //$this->format->setClient($soap_client);
+            
             if ($exception->faultstring == "looks like we got no XML document" && strpos($this->format->getLastResponseHeaders(), "Content-Type: multipart/related;") !== false)
             {
                 $this->format->parseXml();
@@ -104,17 +106,17 @@ class ScheduleReport extends JasperApi
      */
     private function buildScheduleReportFormats()
     {
-        $format_count = count($this->formats);
+        $format_count = count($this->format);
         $xml_formats = '';
-        if ($formats_count > 0)
+        if ($format_count > 0)
         {
             $xml_request = $this->getXmlTemplate('schedule_report_output_format.xml');
             $temp = '<outputFormats soapenc:arrayType="xsd:string[' . $format_count . ']" xsi:type="soapenc:Array" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">';
             
-            foreach ($this->formats AS $format)
+            foreach ($this->format AS $format)
             {
                 $temp_xml_request = $xml_request;
-                $temp_xml_request = str_replace('!!output_format!!', $format);
+                $temp_xml_request = str_replace('!!output_format!!', strtoupper(get_class($format)), $temp_xml_request);
                 $temp .= $temp_xml_request;
             }
             

@@ -31,7 +31,7 @@ foreach ($api_ini['required'] AS $value)
 
 // Create a SoapClient()
 $soap_client = new SoapClient(null, array(
-    'location'      => $api_ini['jasper_server_settings']['jasper_url'],
+    'location'      => $api_ini['jasper_server_settings']['jasper_repository_url'],
     'uri'           => 'urn:',
     'login'         => $api_ini['jasper_server_settings']['jasper_username'],
     'password'      => $api_ini['jasper_server_settings']['jasper_password'],
@@ -68,15 +68,12 @@ $html .= '
 
 if (isset($_POST['future_report']))
 {
-    echo '<pre>';
-    print_r($_POST);
-    echo '</pre>';
-    
+    $soap_client->__setLocation($api_ini['jasper_server_settings']['jasper_schedule_url']);
     // Grab the report to be scheduled
     $report_unit = $_POST['report_list'];
     
     // Create a format object for the desired format
-    $report_format = ($_POST['format'] == 'pdf') ? new Pdf() : new Html();
+    $report_format[] = ($_POST['format'] == 'pdf') ? new Pdf() : new Html();
     
     $params = array( array( 'name'     => array( 'name' => '', 'type' => ''),
                      'value'    => array( 'value' => '', 'type' => '')));
