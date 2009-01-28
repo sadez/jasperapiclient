@@ -60,11 +60,32 @@ $html .= '
                 <td><input type="radio" name="format" value="pdf" checked/>PDF<br /><input type="radio" name="format" value="html" />HTML</td>
             </tr>
             <tr>
-                <td colspan="2"><input type="submit" name="submit" value="Submit"></td>
+                <td><input type="submit" name="submit" value="Submit"></td>
+                <td><input type="submit" name="future_report" value="Schedule Report"></td>
             </tr>
         </table>
         </form>';
 
+if (isset($_POST['future_report']))
+{
+    echo '<pre>';
+    print_r($_POST);
+    echo '</pre>';
+    
+    // Grab the report to be scheduled
+    $report_unit = $_POST['report_list'];
+    
+    // Create a format object for the desired format
+    $report_format = ($_POST['format'] == 'pdf') ? new Pdf() : new Html();
+    
+    $params = array( array( 'name'     => array( 'name' => '', 'type' => ''),
+                     'value'    => array( 'value' => '', 'type' => '')));
+    
+    // Request the scheduling
+    $reportObj = new ScheduleReport($report_unit, $report_format, $params);
+    $report = $reportObj->run($soap_client);
+    
+}
 // If returning from a submit...
 if (isset($_POST['submit']))
 {
