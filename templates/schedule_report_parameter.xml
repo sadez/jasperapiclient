@@ -1,0 +1,4 @@
+<parameters xsi:type="ns1:JobParameter"> 
+    <name xsi:type="!!name_type!!">!!name_name!!</name> 
+    <value xsi:type="!!value_type!!">!!value_value!!</value> 
+</parameters>

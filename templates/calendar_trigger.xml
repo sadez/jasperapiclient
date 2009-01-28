@@ -1,0 +1,8 @@
+<simpleTrigger xsi:type="ns1:JobSimpleTrigger"> 
+    <timezone xsi:type="xsd:string" xsi:nil="true">!!timezone!!</timezone> 
+    <startDate xsi:type="xsd:dateTime">!!start_time!!</startDate> 
+    <endDate xsi:type="xsd:dateTime" xsi:nil="true">!!end_time!!</endDate> 
+    <occurrenceCount xsi:type="xsd:int">!!occurrence_count!!</occurrenceCount> 
+    <recurrenceInterval xsi:type="xsd:int" xsi:nil="true">!!recurrence_interval!!</recurrenceInterval> 
+    <recurrenceIntervalUnit xsi:type="ns1:IntervalUnit" xsi:nil="true">!!recurrence_interval_unit!!</recurrenceIntervalUnit>
+</simpleTrigger>

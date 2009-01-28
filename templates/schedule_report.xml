@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+  <soapenv:Body> 
+    <ns1:scheduleJob soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://www.jasperforge.org/jasperserver/ws"> 
+      <job xsi:type="ns1:Job"> 
+        
+        <reportUnitURI xsi:type="xsd:string">!!report!!</reportUnitURI> 
+        
+        <username xsi:type="xsd:string" xsi:nil="true"/> 
+        
+        <label xsi:type="xsd:string">!!label!!</label> 
+        
+        <description xsi:type="xsd:string">!!description!!</description> 
+        
+        !!simple_trigger!! 
+        
+        !!calendar_trigger!! 
+        
+        !!parameters!!
+        
+        <baseOutputFilename xsi:type="xsd:string">!!output_filename!!</baseOutputFilename> 
+        
+        !!output_format!! 
+        
+        <outputLocale xsi:type="xsd:string" xsi:nil="true"/> 
+        
+        !!repository_destination!!
+        
+        <mailNotification xsi:type="ns1:JobMailNotification" xsi:nil="!!mail_notification!!"/> 
+        
+      </job> 
+    </ns1:scheduleJob> 
+  </soapenv:Body> 
+</soapenv:Envelope>

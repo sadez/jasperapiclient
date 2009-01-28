@@ -1,0 +1,5 @@
+<request operationName="list" locale="en">
+    <resourceDescriptor name="" wsType="folder" uriString="/reports" isNew="!!is_new!!">
+        <label>null</label>
+    </resourceDescriptor>
+</request>

@@ -1,0 +1,5 @@
+<repositoryDestination xsi:type="ns1:JobRepositoryDestination"> 
+  <folderURI xsi:type="xsd:string">!!folder_uri!!</folderURI> 
+  <sequentialFilenames xsi:type="xsd:boolean">!!sequential_filenames!!</sequentialFilenames> 
+  <overwriteFiles xsi:type="xsd:boolean">!!override_files!!</overwriteFiles> 
+</repositoryDestination>
