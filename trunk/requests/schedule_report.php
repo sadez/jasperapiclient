@@ -2,7 +2,7 @@
 
 class ScheduleReport extends JasperApi
 {   
-    public function run()
+    public function run($soap_client)
     {
         // run the report
         $xml_request = $this->getXmlTemplate('schedule_report.xml');
@@ -21,6 +21,36 @@ class ScheduleReport extends JasperApi
         $xml_request = str_replace('!!output_format!!', $formats, $xml_request);
         $xml_request = str_replace('!!repository_destination!!', $repository_destination, $xml_request);
         $xml_request = str_replace('!!mail_notification!!', '', $xml_request);
+        
+        echo $xml_request; exit;
+        
+        try
+        {
+            $result = $soap_client->__soapCall('scheduleJob', array(new SoapParam($xml_request,"requestXmlString")));
+            $this->format->setClient($soap_client);
+            $this->format->parseXml();
+        }
+        catch(SoapFault $exception)
+        {
+            $this->format->setClient($soap_client);
+            if ($exception->faultstring == "looks like we got no XML document" && strpos($this->format->getLastResponseHeaders(), "Content-Type: multipart/related;") !== false)
+            {
+                $this->format->parseXml();
+            }
+            else
+            {
+                throw $exception;
+            }
+        }
+
+        if (!isset($result))
+        {
+            return $this->format->getReport();
+        }
+        else
+        {
+            throw new Exception('Jasper did not return ' . strtoupper(get_class($format)) . ' data. Instead got: ' . "\n" . $result);
+        }
     }
     
     /**
@@ -54,13 +84,13 @@ class ScheduleReport extends JasperApi
             $xml_request = $this->getXmlTemplate('schedule_report_parameter.xml');
             $temp = '<parameters soapenc:arrayType="ns1:JobParameter[' . $param_count . ']" xsi:type="soapenc:Array" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">';
             
-            foreach ($params AS $param)
+            foreach ($this->params AS $param)
             {
                 $temp_xml_request = $xml_request;
-                $temp_xml_request = str_replace('!!name_type!!', $this->param['name']['type'], $temp_xml_request);
-                $temp_xml_request = str_replace('!!name_name!!', $this->param['name']['name'], $temp_xml_request);
-                $temp_xml_request = str_replace('!!value_type!!', $this->param['value']['type'], $temp_xml_request);
-                $temp_xml_request = str_replace('!!value_value!!', $this->param['value']['value'], $temp_xml_request);
+                $temp_xml_request = str_replace('!!name_type!!', $param['name']['type'], $temp_xml_request);
+                $temp_xml_request = str_replace('!!name_name!!', $param['name']['name'], $temp_xml_request);
+                $temp_xml_request = str_replace('!!value_type!!', $param['value']['type'], $temp_xml_request);
+                $temp_xml_request = str_replace('!!value_value!!', $param['value']['value'], $temp_xml_request);
                 $temp .= $temp_xml_request;
             }
             
