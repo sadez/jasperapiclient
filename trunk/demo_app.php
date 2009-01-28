@@ -29,14 +29,21 @@ foreach ($api_ini['required'] AS $value)
     require_once($value);
 }
 
-// Create the JasperApiClient object - Pass it the URL, Username and Password
-$client = new JasperApiClient($api_ini['jasper_server_settings']['jasper_url'],
-                              $api_ini['jasper_server_settings']['jasper_username'],
-                              $api_ini['jasper_server_settings']['jasper_password']);
-
+// Create a SoapClient()
+$soap_client = new SoapClient(null, array(
+    'location'      => $api_ini['jasper_server_settings']['jasper_url'],
+    'uri'           => 'urn:',
+    'login'         => $api_ini['jasper_server_settings']['jasper_username'],
+    'password'      => $api_ini['jasper_server_settings']['jasper_password'],
+    'trace'         => 1,
+    'exception'     => 1,
+    'soap_version'  => SOAP_1_1,
+    'style'         => SOAP_RPC,
+    'use'           => SOAP_LITERAL));
 
 // Request the list of reports
-$listXml = $client->requestList();
+$list = new RequestList();
+$listXml = $list->run($soap_client);
 
 // Load XML load from list request into an HtmlList object to create the selector
 $htmlList = new HtmlList($listXml);
@@ -46,7 +53,7 @@ $html = '<h1>Welcome to the Jasper API Client sample application.</h1>
          <br>Select a report from the drop down and select either HTML or PDF as the report format and click Submit.';
 
 $html .= '
-        <form name="sample_app" action="sample_app.php" method="post">
+        <form name="demo_app" action="demo_app.php" method="post">
         <table>
             <tr>
                 <td>' . $htmlList->getHtmlList() . '</td>
@@ -70,17 +77,19 @@ if (isset($_POST['submit']))
     $params = array( 'COMPANY_ID' => '5');
 
     // Request the report
-    $report = $client->requestReport($report_unit, $report_format, $params);
+    $reportObj = new RequestReport($report_unit, $report_format, $params);
+    $report = $reportObj->run($soap_client);
 
     // If they requested PDF, update the headers and echo the report
     if (strtoupper(get_class($report_format)) == 'PDF')
     {
-        $filename = $client->getReportFileName();
+        $filename = $reportObj->getReportFileName();
         header('Content-type: application/pdf');
         header('Content-Disposition: attachment; filename="' . $filename . '.pdf"');
         echo $report;
     }
-    // If they requested HTML then go through each data element 
+
+    // If they requested HTML then go through each data element
     // and write the image to the file system
     else if(strtoupper(get_class($report_format)) == 'HTML')
     {
