@@ -9,6 +9,7 @@ class ScheduleReport extends JasperApi
         
         $params = $this->buildScheduleReportParameters();
         $formats = $this->buildScheduleReportFormats();
+        $simple_trigger = $this->buildScheduleReportSimpleTrigger();
         $filename = $this->getReportFileName();
         $repository_destination = $this->buildScheduleReportRepositoryDestination();
         
@@ -16,14 +17,12 @@ class ScheduleReport extends JasperApi
         $xml_request = str_replace('!!label!!', date('U'), $xml_request);
         $xml_request = str_replace('!!description!!', '', $xml_request);
         $xml_request = str_replace('!!parameters!!', $params, $xml_request);
-        $xml_request = str_replace('!!simple_trigger!!', '', $xml_request);
+        $xml_request = str_replace('!!simple_trigger!!', $simple_trigger, $xml_request);
         $xml_request = str_replace('!!calendar_trigger!!', '', $xml_request);
         $xml_request = str_replace('!!output_filename!!', $filename, $xml_request);
         $xml_request = str_replace('!!output_format!!', $formats, $xml_request);
         $xml_request = str_replace('!!repository_destination!!', $repository_destination, $xml_request);
         $xml_request = str_replace('!!mail_notification!!', '', $xml_request);
-        
-        echo $xml_request; exit;
         
         try
         {
@@ -34,6 +33,7 @@ class ScheduleReport extends JasperApi
         catch(SoapFault $exception)
         {
             //$this->format->setClient($soap_client);
+            
             
             if ($exception->faultstring == "looks like we got no XML document" && strpos($this->format->getLastResponseHeaders(), "Content-Type: multipart/related;") !== false)
             {
@@ -53,6 +53,23 @@ class ScheduleReport extends JasperApi
         {
             throw new Exception('Jasper did not return ' . strtoupper(get_class($format)) . ' data. Instead got: ' . "\n" . $result);
         }
+    }
+    
+    /**
+     *
+     */
+    private function buildScheduleReportSimpleTrigger()
+    {
+        $xml_request = $this->getXmlTemplate('schedule_report_simple_trigger.xml');
+        
+        $xml_request = str_replace('!!timezone!!', '', $xml_request);
+        $xml_request = str_replace('!!start_date!!', '', $xml_request);
+        $xml_request = str_replace('!!end_date!!', '', $xml_request);
+        $xml_request = str_replace('!!occurrence_count!!', '', $xml_request);
+        $xml_request = str_replace('!!recurrence_interval!!', '', $xml_request);
+        $xml_request = str_replace('!!recurrence_interval_unit!!', '', $xml_request);
+        
+        return $xml_request;
     }
     
     /**
