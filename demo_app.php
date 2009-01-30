@@ -68,6 +68,7 @@ $html .= '
 
 if (isset($_POST['future_report']))
 {
+    echo $api_ini['jasper_server_settings']['jasper_schedule_url'];
     $soap_client->__setLocation($api_ini['jasper_server_settings']['jasper_schedule_url']);
     // Grab the report to be scheduled
     $report_unit = $_POST['report_list'];
@@ -75,8 +76,8 @@ if (isset($_POST['future_report']))
     // Create a format object for the desired format
     $report_format[] = ($_POST['format'] == 'pdf') ? new Pdf() : new Html();
     
-    $params = array( array( 'name'     => array( 'name' => '', 'type' => ''),
-                     'value'    => array( 'value' => '', 'type' => '')));
+    $params = array( array( 'name'     => array( 'name' => 'reportUnitURI', 'type' => 'xsd:string'),
+                     'value'    => array( 'value' => '/report/', 'type' => '')));
     
     // Request the scheduling
     $reportObj = new ScheduleReport($report_unit, $report_format, $params);
