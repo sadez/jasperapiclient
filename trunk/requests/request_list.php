@@ -18,6 +18,8 @@ class RequestList extends JasperApi
         try
         {
             $result = $soap_client->__soapCall('list', array( new SoapParam($xml_request,"requestXmlString") ));
+            echo $soap_client->__getLastRequest(); exit;
+            echo $soap_client->__getLastResponse(); exit;
         }
         catch(SoapFault $exception)
         {
