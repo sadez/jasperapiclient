@@ -1,6 +1,6 @@
 <?php
 
-class RequestList extends JasperApi
+class CheckUsername extends JasperApi
 {
     private $is_new = false;
     
@@ -12,9 +12,21 @@ class RequestList extends JasperApi
      */
     public function run($soap_client)
     {
+        
+        $op_xml = "<request operationName=\"list\"><resourceDescriptor name=\"\" wsType=\"folder\" uriString=\"\" isNew=\"false\">".
+		"<label></label></resourceDescriptor></request>";
+		
+		$params = array("request" => $op_xml );
+		$response = $info->call("list",$params,array('namespace' => $GLOBALS["namespace"]));
+		
+		return $response;
+		
+		
+		
+		
         $xml_request = $this->getXmlTemplate('request_list.xml');
         $xml_request = str_replace('!!is_new!!', $this->is_new, $xml_request);
-        $xml_request = str_replace('!!uri_string!!', '/reports', $xml_request);
+        $sml_request = str_replace('!!uri_string!!', '/', $xml_request);
 
         try
         {

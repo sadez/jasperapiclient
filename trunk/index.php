@@ -1,15 +1,49 @@
 <?php
    error_reporting(E_ALL);
    ini_set('display_errors', true);
-   require_once('client.php');
-
-   $errorMessage = "";
    
-   $username = $HTTP_POST_VARS['username'];
-   $password = $HTTP_POST_VARS['password'];
+   //Loading up my required files
+   {
+   $api_ini = parse_ini_file('jasper_api_client.ini', true);
+   define('FULL_PATH', '/home/jthullbery/www/public_html/testing/1/');
+   foreach ($api_ini['parent'] AS $value)
+   {
+       require_once($value);
+   }
+   foreach ($api_ini['required_dir'] AS $value)
+   {
+       $files = scandir(FULL_PATH . $value, 1);
+       foreach ($files AS $name)
+       {
+           if (substr($name, -3) == 'php')
+           {
+               require_once($value . '/' . $name);
+           }
+       }
+   }
+   foreach ($api_ini['required'] AS $value)
+   {
+       require_once($value);
+   }
+   }
+   
+   $errorMessage = "";
+   $username = isset($HTTP_POST_VARS['username']) ? $HTTP_POST_VARS['username'] : '';
+   $password = isset($HTTP_POST_VARS['password']) ? $HTTP_POST_VARS['password'] : '';
    
    if ($username != '')
    {
+        $soap_client = new SoapClient(null, array(
+            'location'      => $api_ini['jasper_server_settings']['jasper_repository_url'],
+            'uri'           => 'urn:',
+            'login'         => $api_ini['jasper_server_settings']['jasper_username'],
+            'password'      => $api_ini['jasper_server_settings']['jasper_password'],
+            'trace'         => 1,
+            'exception'     => 1,
+            'soap_version'  => SOAP_1_1,
+            'style'         => SOAP_RPC,
+            'use'           => SOAP_LITERAL));
+            
    		$result = ws_checkUsername($username, $password);
    		if (get_class($result) == 'SOAP_Fault')
    		{

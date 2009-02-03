@@ -5,7 +5,7 @@ ini_set('display_errors', true);
 
 $api_ini = parse_ini_file('jasper_api_client.ini', true);
 
-define('FULL_PATH', '/home/jthullbery/www/public_html/jasperApi/trunk/');
+define('FULL_PATH', '/home/jthullbery/www/public_html/testing/1/');
 
 foreach ($api_ini['parent'] AS $value)
 {
