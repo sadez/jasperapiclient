@@ -68,7 +68,6 @@ $html .= '
 
 if (isset($_POST['future_report']))
 {
-    echo $api_ini['jasper_server_settings']['jasper_schedule_url'];
     $soap_client->__setLocation($api_ini['jasper_server_settings']['jasper_schedule_url']);
     // Grab the report to be scheduled
     $report_unit = $_POST['report_list'];
