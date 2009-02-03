@@ -15,7 +15,7 @@ class ScheduleReport extends JasperApi
         
         $xml_request = str_replace('!!report!!', $this->report, $xml_request);
         $xml_request = str_replace('!!label!!', date('U'), $xml_request);
-        $xml_request = str_replace('!!description!!', '', $xml_request);
+        $xml_request = str_replace('!!description!!', 'description', $xml_request);
         $xml_request = str_replace('!!parameters!!', $params, $xml_request);
         $xml_request = str_replace('!!simple_trigger!!', $simple_trigger, $xml_request);
         $xml_request = str_replace('!!calendar_trigger!!', '', $xml_request);
@@ -23,17 +23,23 @@ class ScheduleReport extends JasperApi
         $xml_request = str_replace('!!output_format!!', $formats, $xml_request);
         $xml_request = str_replace('!!repository_destination!!', $repository_destination, $xml_request);
         $xml_request = str_replace('!!mail_notification!!', '', $xml_request);
+
         
         try
         {
+            $jobs = $soap_client->getReportJobs();
+            print_r($jobs);
+            exit;
             $result = $soap_client->__soapCall('scheduleJob', array(new SoapParam($xml_request,"requestXmlString")));
             $this->format->setClient($soap_client);
             $this->format->parseXml();
         }
         catch(SoapFault $exception)
         {
-            //$this->format->setClient($soap_client);
             
+            echo '<pre>';
+            print_r($exception);
+            exit;
             
             if ($exception->faultstring == "looks like we got no XML document" && strpos($this->format->getLastResponseHeaders(), "Content-Type: multipart/related;") !== false)
             {
