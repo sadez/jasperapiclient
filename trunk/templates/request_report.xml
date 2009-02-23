@@ -1,9 +1,0 @@
-<request operationName="runReport" locale="en">
-  <argument name="RUN_OUTPUT_FORMAT">!!format!!</argument>
-  <resourceDescriptor name="" wsType=""
-  uriString="!!report!!"
-  isNew="false">
-  <label>null</label>
-  !!params!!
-  </resourceDescriptor>
-</request>

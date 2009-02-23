@@ -3,9 +3,6 @@
 error_reporting(E_ALL);
 ini_set('display_errors', true);
 
-$SCHEDULING_WS_URI = "https://reports.teladoc.com/services/ReportScheduler?wsdl";
-
-
 class IntervalUnit {
   const MINUTE = 'MINUTE';
   const HOUR = 'HOUR';
@@ -55,7 +52,7 @@ class ReportSchedulerService extends SoapClient
                                       'IntervalUnit' => 'IntervalUnit',
                                       'CalendarDaysType' => 'CalendarDaysType',
                                       'ResultSendType' => 'ResultSendType',
-                                      'RuntimeJobState' => 'RuntimeJobState',
+                                      'RuntimeJobState' => 'RuntimeJobState'
                                      );
     
     public function ReportSchedulerService($wsdl, $username, $password, $options = array())

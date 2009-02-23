@@ -3,9 +3,12 @@
 class RequestList extends JasperApi
 {
     private $is_new = false;
+    private $current_uri;
     
-    public function __construct()
-    {}
+    public function __construct($current_uri = '/')
+    {
+        $this->current_uri = $current_uri;
+    }
     
     /**
      *
@@ -14,7 +17,7 @@ class RequestList extends JasperApi
     {
         $xml_request = $this->getXmlTemplate('request_list.xml');
         $xml_request = str_replace('!!is_new!!', $this->is_new, $xml_request);
-        $xml_request = str_replace('!!uri_string!!', '/reports', $xml_request);
+        $xml_request = str_replace('!!uri_string!!', $this->current_uri, $xml_request);
 
         try
         {
