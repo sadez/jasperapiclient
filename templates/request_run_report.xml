@@ -1,0 +1,7 @@
+<request operationName="runReport" locale="en">
+  !!arguments!!
+  <resourceDescriptor name="" wsType="reportUnit" uriString="!!report!!" isNew="false">
+  <label>null</label>
+  !!params!!
+  </resourceDescriptor>
+</request>

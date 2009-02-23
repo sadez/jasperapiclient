@@ -5,7 +5,6 @@
    //Loading up my required files
    {
    $api_ini = parse_ini_file('jasper_api_client.ini', true);
-   define('FULL_PATH', '/home/jthullbery/www/public_html/testing/1/');
    foreach ($api_ini['parent'] AS $value)
    {
        require_once($value);
@@ -28,37 +27,42 @@
    }
    
    $errorMessage = "";
-   $username = isset($HTTP_POST_VARS['username']) ? $HTTP_POST_VARS['username'] : '';
-   $password = isset($HTTP_POST_VARS['password']) ? $HTTP_POST_VARS['password'] : '';
+   $username = isset($_POST['username']) ? $_POST['username'] : '';
+   $password = isset($_POST['password']) ? $_POST['password'] : '';
    
    if ($username != '')
    {
-        $soap_client = new SoapClient(null, array(
+        $soap_options = array(
             'location'      => $api_ini['jasper_server_settings']['jasper_repository_url'],
             'uri'           => 'urn:',
-            'login'         => $api_ini['jasper_server_settings']['jasper_username'],
-            'password'      => $api_ini['jasper_server_settings']['jasper_password'],
+            'login'         => $_POST['username'],
+            'password'      => $_POST['password'],
             'trace'         => 1,
             'exception'     => 1,
             'soap_version'  => SOAP_1_1,
             'style'         => SOAP_RPC,
-            'use'           => SOAP_LITERAL));
-            
-   		$result = ws_checkUsername($username, $password);
-   		if (get_class($result) == 'SOAP_Fault')
+            'use'           => SOAP_LITERAL);
+        
+        $soap_client = new SoapClient(null, $soap_options);
+        
+        // Check the credientials
+        $check_user = new CheckUsername();
+        $result = $check_user->run($soap_client);
+
+   		if (get_class($result) == 'SoapFault')
    		{
-   			$errorMessage = $result->getFault()->faultstring;
+   			$errorMessage = $result->faultstring;
 		}
 		else
 		{
-			session_start();
+            session_start();
             session_unset();
-			session_register("username");
-			session_register("password");
-			$HTTP_SESSION_VARS["username"]=$username;
-			$HTTP_SESSION_VARS["password"]=$password;
-			header("location: test_app.php");	
-		     	exit();	
+            session_register('username');
+            session_register('password');
+            $_SESSION['username'] = $username;
+            $_SESSION['password'] = $password;
+            header("location: list_dir.php?uri=");	
+            exit();	
 		}
    }
              
@@ -72,7 +76,7 @@
     </head>
     <body>
 
-    <h1>Welcome to the JasperServer sample (PHP version)</h1>
+    <h1>Welcome to the James API Example</h1>
     
    <h2><font color="red"><?php echo $errorMessage; ?></font></h2>
    

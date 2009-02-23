@@ -1,16 +1,28 @@
 <?php
 
-class RequestReport extends JasperApi
+class RequestRunReport extends JasperApi
 {
+    private $page;
+    
+    public function __construct($report, $format, $params, $page)
+    {
+        $this->report = $report;
+        $this->format = $format;
+        $this->params = $params;
+        $this->page = $page;
+    }
     /**
      *
      */
     public function run($soap_client)
     {
-        $params_xml = $this->buildRequestReportParameters();
-        $xml_request = $this->getXmlTemplate('request_report.xml');
+        $params_xml = $this->buildRunRequestReportParameters();
+        $xml_request = $this->getXmlTemplate('request_run_report.xml');
+        
+        $arguments = '<argument name="RUN_OUTPUT_FORMAT">' . strtoupper(get_class($this->format)) . '</argument>';
+        $arguments .= '<argument name="RUN_OUTPUT_PAGE">' . $this->page . '</argument>';
 
-        $xml_request = str_replace('!!format!!', strtoupper(get_class($this->format)), $xml_request);
+        $xml_request = str_replace('!!arguments!!', $arguments, $xml_request);
         $xml_request = str_replace('!!report!!', $this->report, $xml_request);
         $xml_request = str_replace('!!params!!', $params_xml, $xml_request);
         
@@ -46,7 +58,7 @@ class RequestReport extends JasperApi
     /**
      *
      */
-    private function buildRequestReportParameters()
+    private function buildRunRequestReportParameters()
     {
         $params_xml = '';
         foreach ($this->params as $name => $value)

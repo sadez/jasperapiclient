@@ -10,6 +10,7 @@ class Html extends report
         $parts = explode($boundary, $this->getLastResponse());
 
         $pdf = null;
+        $html = array();
         
         foreach($parts as $part)
         {

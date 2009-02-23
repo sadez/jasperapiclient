@@ -5,7 +5,6 @@ class JasperApi
     protected $report;
     protected $format;
     protected $params;
-    
     private $soap_client;
     
     /**

@@ -1,10 +1,7 @@
-<?php
-
-	require_once("report_scheduler_service.php");
-	
+<?php	
 	$api_ini = parse_ini_file('jasper_api_client.ini', true);
 
-    define('FULL_PATH', '/home/jthullbery/www/public_html/jasperApi/trunk/');
+    define('FULL_PATH', '/home/jthullbery/www/public_html/testing/1/');
 
     foreach ($api_ini['parent'] AS $value)
     {
@@ -30,21 +27,22 @@
 	
 	error_reporting(E_ALL);
     ini_set('display_errors', true);
+    
 	session_start();
-	$username = $HTTP_SESSION_VARS["username"];
-	$password = $HTTP_SESSION_VARS["password"];
+	$username = $_SESSION['username'];
+	$password = $_SESSION['password'];
 	if (!isset($username))
 	{
 		header("Location: index.php");
 		exit();
 	}
+    
+	$reportSchedulerService = new ReportSchedulerService($api_ini['jasper_server_settings']['jasper_schedule_url'], $username, $password);
 
-	$reportSchedulerService = new ReportSchedulerService($SCHEDULING_WS_URI, $username, $password);
-
-	$reportURI = $HTTP_GET_VARS["reportURI"];
+	$reportURI = (isset($_GET['reportURI'])) ? $_GET['reportURI'] : '';
 	$parentURI = substr($reportURI, 0, strrpos($reportURI, "/"));
 	
-	$reportSchedulerService->__setLocation($SCHEDULING_WS_URI);
+	$reportSchedulerService->__setLocation($api_ini['jasper_server_settings']['jasper_schedule_url']);
 
 	$jobs = $reportSchedulerService->getReportJobs($reportURI);
 

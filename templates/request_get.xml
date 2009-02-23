@@ -1,0 +1,6 @@
+<request operationName="get" locale="en">
+    !!arguments!!
+    <resourceDescriptor name="!!name!!" wsType="reportUnit" uriString="!!uri_string!!" isNew="!!is_new!!">
+        <label>null</label>
+    </resourceDescriptor>
+</request>
