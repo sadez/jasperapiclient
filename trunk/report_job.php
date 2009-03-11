@@ -92,7 +92,7 @@
     </form>
     </center>
      <hr/>
-     <a href="test_app.php?reportURI=<?php echo $reportURI ?>">Back</a>
+     <a href="list_dir.php?reportURI=<?php echo $reportURI ?>">Back</a>
      <br/>
      <a href="index.php">Exit</a>
     </body>

@@ -1,37 +1,62 @@
 <?php
 
-	require_once("ReportSchedulerService.php");
+	$api_ini = parse_ini_file('jasper_api_client.ini', true);
+
+    foreach ($api_ini['parent'] AS $value)
+    {
+        require_once($value);
+    }
+
+    foreach ($api_ini['required_dir'] AS $value)
+    {
+        $files = scandir(FULL_PATH . $value, 1);
+        foreach ($files AS $name)
+        {
+            if (substr($name, -3) == 'php')
+            {
+                require_once($value . '/' . $name);
+            }
+        }
+    }
+
+    foreach ($api_ini['required'] AS $value)
+    {
+        require_once($value);
+    }
+	
+	error_reporting(E_ALL);
+    ini_set('display_errors', true);
 
 	session_start();
-	$username = $HTTP_SESSION_VARS["username"];
-	$password = $HTTP_SESSION_VARS["password"];
+	$username = $_SESSION["username"];
+	$password = $_SESSION["password"];
 	if (!isset($username))
 	{
 		header("Location: index.php");
 		exit();
 	}
 			
-	$reportSchedulerService = new ReportSchedulerService($SCHEDULING_WS_URI, $username, $password);
+	$reportSchedulerService = new ReportSchedulerService($api_ini['jasper_server_settings']['jasper_schedule_url'], $username, $password);
 	
 	$job = new Job();
-	$reportURI = $HTTP_POST_VARS["reportURI"];
+	$reportURI = $_POST["reportURI"];
 	$job->reportUnitURI = $reportURI;
-	$job->label = $HTTP_POST_VARS["label"];
-	$job->baseOutputFilename = $HTTP_POST_VARS["outputName"];
-	$job->outputFormats = $HTTP_POST_VARS["output"];
+	$job->label = $_POST["label"];
+	$job->baseOutputFilename = $_POST["outputName"];
+	$job->outputFormats = $_POST["output"];
    
 	$repoDest = new JobRepositoryDestination();
 	$repoDest->folderURI = "/ContentFiles"; //hardcoded!
-	$repoDest->sequentialFilenames = isset($HTTP_POST_VARS["sequential"]);
+	$repoDest->sequentialFilenames = isset($_POST["sequential"]);
 	$job->repositoryDestination = $repoDest;
    
 	$trigger = new JobSimpleTrigger();
 	$trigger->occurrenceCount = -1; //recur indefinitely
-	$trigger->recurrenceInterval = $HTTP_POST_VARS["interval"];
-	$trigger->recurrenceIntervalUnit = $HTTP_POST_VARS["intervalUnit"];
+	$trigger->recurrenceInterval = $_POST["interval"];
+	$trigger->recurrenceIntervalUnit = $_POST["intervalUnit"];
 	$job->simpleTrigger = $trigger;
 
-	$mailTo = $HTTP_POST_VARS["mailTo"];
+	$mailTo = $_POST["mailTo"];
 	if ($mailTo != "")
 	{
 		$mail = new JobMailNotification();
@@ -41,7 +66,7 @@
 		$mail->resultSendType = ResultSendType::SEND;
 		$job->mailNotification = $mail;
 	}
-	$reportSchedulerService->__setLocation($SCHEDULING_WS_URI);
+	$reportSchedulerService->__setLocation($api_ini['jasper_server_settings']['jasper_schedule_url']);
 	$savedJob = $reportSchedulerService->scheduleJob($job);
 ?>
 
@@ -58,7 +83,7 @@
     <hr/>
     <h3>Saved job <?php echo $savedJob->id ?>.</h3>
      <hr/>
-     <a href="reportSchedule.php?reportURI=<?php echo $reportURI ?>">Back</a>
+     <a href="report_schedule.php?reportURI=<?php echo $reportURI ?>">Back</a>
     <br/>
      <a href="index.php">Exit</a>
     </body>

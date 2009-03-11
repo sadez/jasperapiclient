@@ -1,8 +1,6 @@
 <?php	
 	$api_ini = parse_ini_file('jasper_api_client.ini', true);
 
-    define('FULL_PATH', '/home/jthullbery/www/public_html/testing/1/');
-
     foreach ($api_ini['parent'] AS $value)
     {
         require_once($value);
@@ -72,8 +70,10 @@
         	<td align="center">Next run time</td>
         <tr>
     <?php
-    	foreach ($jobs as $job)
-    	{
+        if (is_array($jobs))
+        {
+    	    foreach ($jobs as $job)
+    	    {
     ?>
         <tr>
         	<td><?php echo $job->id ?></td>
@@ -83,13 +83,21 @@
         	<td><?php echo $job->nextFireTime ?></td>
         </tr>
     <?php
+    	    }
     	}
+    	else
+    	{   ?>
+    	<tr>
+    	    <td colspan="5">No scheduled jobs.</td>
+    	</tr>
+	<?php
+	    }
     ?>
          </table>
          <br/>
          <a href="report_job.php?reportURI=<?php echo $reportURI ?>">Schedule new job</a>
          <hr/>
-         <a href="listReports.php?uri=<?php echo $parentURI ?>">Back to repository</a>
+         <a href="list_dir.php?uri=<?php echo $parentURI ?>">Back to repository</a>
          <br/>
          <a href="index.php">Exit</a>
         </body>
