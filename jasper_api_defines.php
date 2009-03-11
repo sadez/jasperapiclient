@@ -3,10 +3,10 @@
 /**
  * These Constants are custom
  */
-define('BASE_PATH', '/home/jthullbery/www/public_html/testing/');
-define('FULL_PATH', BASE_PATH . '1/');
+define('BASE_PATH', '/Library/WebServer/Documents/');
+define('FULL_PATH', BASE_PATH . 'jasperapiclient/');
 define('WRITABLE', FULL_PATH . 'images/');
-define('HTTP', 'https://blackwell.teladoc.com/~jthullbery/testing/');
+define('HTTP', 'http://localhost/jasperapiclient/');
 
 define("TYPE_FOLDER","folder");
 define("TYPE_REPORTUNIT","reportUnit");

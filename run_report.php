@@ -30,15 +30,20 @@ ini_set('display_errors', true);
 session_start();
 if ($_SESSION['username'] == '')
 {
-	header('Location: index.php');
-    	exit();
+    header('Location: index.php');
+    exit();
 }
 
 $currentUri = "/";
+$previousUri = "/";
 
 if ($_GET['uri'] != '')
 {
 	$currentUri = $_GET['uri'];
+	if (strlen($currentUri) > 1)
+	{
+	    $previousUri = substr($currentUri, 0, strrpos($currentUri, '/'));
+    }
 }
 
 $soap_options = array(
@@ -89,6 +94,8 @@ $reportUnit = $folders[0];
     <body>
 
     <h1><?php echo  $reportUnit['label']; ?></h1>
+    
+    <a href="list_dir.php?uri=<?php echo $previousUri; ?>">[..]</a>
     
     <br>
     <br>
@@ -255,7 +262,7 @@ $reportUnit = $folders[0];
         }
      ?>
      <hr>
-     <a href="listReports.php?uri=/">Exit</a>
+     <a href="index.php">Exit</a>
     </body>
 </html>
 
