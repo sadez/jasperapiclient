@@ -3,8 +3,8 @@
 /**
  * These Constants are custom
  */
-define('BASE_PATH', '/Library/WebServer/Documents/drupal/');
-define('WEB_VIEWABLE', 'sites/all/modules/reports/jasperapiclient/');
+define('BASE_PATH', 'CHANGE/ME');
+define('WEB_VIEWABLE', 'CHANGE/ME');
 define('FULL_PATH', BASE_PATH . WEB_VIEWABLE);
 define('WRITABLE', FULL_PATH . 'images/');
 //define('HTTP', 'http://localhost/jasperapiclient/');
