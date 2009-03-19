@@ -3,10 +3,11 @@
 /**
  * These Constants are custom
  */
-define('BASE_PATH', '/Library/WebServer/Documents/');
-define('FULL_PATH', BASE_PATH . 'jasperapiclient/');
+define('BASE_PATH', '/Library/WebServer/Documents/drupal/');
+define('WEB_VIEWABLE', 'sites/all/modules/reports/jasperapiclient/');
+define('FULL_PATH', BASE_PATH . WEB_VIEWABLE);
 define('WRITABLE', FULL_PATH . 'images/');
-define('HTTP', 'http://localhost/jasperapiclient/');
+//define('HTTP', 'http://localhost/jasperapiclient/');
 
 define("TYPE_FOLDER","folder");
 define("TYPE_REPORTUNIT","reportUnit");
