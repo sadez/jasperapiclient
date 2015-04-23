@@ -1,0 +1,1 @@
+A client application to assist in connecting to the Jasper Report Server and running reports.
